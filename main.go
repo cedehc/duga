@@ -30,7 +30,7 @@ func main() {
 	db := api.NewFakeDb()
 	db.FakeData()
 
-	comics := new(api.ComicId)
+	comics := new(api.Comic)
 	comics.ComicKeeper = db
 
 	router := jas.NewRouter(comics)

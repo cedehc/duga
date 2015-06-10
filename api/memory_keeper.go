@@ -16,25 +16,29 @@
 */
 package api
 
-type FakeDb []Comic
+type FakeDb map[string]ComicItem
 
 func NewFakeDb() *FakeDb {
-	var tmp FakeDb = make([]Comic, 0, 10)
+	var tmp FakeDb = make(map[string]ComicItem)
 
 	return &tmp
 }
 
 func (p *FakeDb) FakeData() {
-	*p = append(*p, Comic{"xkcd", "xkcd.com"})
-	*p = append(*p, Comic{"abstrusegoose", "abstrusegoose.com"})
+	(*p)["xkcd"] = ComicItem{"xkcd", "XKCD", "xkcd.com"}
+	(*p)["abstrusegoose"] = ComicItem{"abstrusegoose", "Abstruse Goose", "abstrusegoose.com"}
 }
 
-func (p *FakeDb) Fetch(id int) (Comic, error) {
-	if id < p.Count() {
-		return (*p)[id], nil
+func (p *FakeDb) Fetch(uid string) (ComicItem, error) {
+	tmp, ok := (*p)[uid]
+	var err error
+
+	if !ok {
+		tmp = ComicItem{}
+		err = &ComicError{"invalid id"}
 	}
 
-	return Comic{}, &ComicError{"invalid id"}
+	return tmp, err
 }
 
 func (p *FakeDb) Count() int {

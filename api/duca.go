@@ -20,19 +20,29 @@ import (
 	"github.com/coocood/jas"
 )
 
-type ComicId struct {
-	ComicKeeper Keeper
+type Keeper interface {
+	Count() int
+	Fetch(uid string) (ComicItem, error)
 }
 
 type Comic struct {
+	ComicKeeper Keeper
+}
+
+func (*Comic) Gap() string {
+	return ":uid"
+}
+
+type ComicItem struct {
+	Uid   string
 	Title string
 	Link  string
 }
 
-func (p *ComicId) Get(ctx *jas.Context) {
-	id := int(ctx.Id)
+func (p *Comic) Get(ctx *jas.Context) {
+	uid := ctx.GapSegment("")
 
-	tmp, err := p.ComicKeeper.Fetch(id)
+	tmp, err := p.ComicKeeper.Fetch(uid)
 
 	if err == nil {
 		ctx.Data = tmp
@@ -47,9 +57,4 @@ type ComicError struct {
 
 func (e *ComicError) Error() string {
 	return e.Msg
-}
-
-type Keeper interface {
-	Count() int
-	Fetch(id int) (Comic, error)
 }
