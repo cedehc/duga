@@ -23,7 +23,7 @@ import (
 
 	"github.com/coocood/jas"
 
-	"duca/api"
+	"github.com/cedehc/duga/api"
 )
 
 func main() {
